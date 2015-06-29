@@ -2,15 +2,16 @@ from controlmypi import ControlMyPi
 import RPi.GPIO as GPIO
 import time
 import requests
+import os
 
 URL = (
-    'https://api.forecast.io/forecast/315b8d00f53242c2c686b3a0aafe13bf/'
+    'https://api.forecast.io/forecast/{}/'
     '45.5119,-122.5943'
-)
+).format(os.environ.get('FORCASTIO_KEY'))
 
 start_time = time.time()
-JABBER_ID = 'aleckkozak@gmail.com'
-JABBER_PASSWORD = 'sixhcuaajyjbykaw'
+JABBER_ID = os.environ.get('JABBER_ID')
+JABBER_PASSWORD = os.environ.get('JABBER_PASSWORD')
 SHORT_ID = 'oneled'
 FRIENDLY_NAME = 'Raised Bed 1'
 MIN_TEMP, MAX_TEMP, DEFAULT_TEMP = 20, 110, 70
