@@ -4,9 +4,10 @@ import time
 import requests
 import os
 
+
+# MT TABOR, OR
 URL = (
-    'https://api.forecast.io/forecast/{}/'
-    '45.5119,-122.5943'
+    'https://api.forecast.io/forecast/{}/45.5119,-122.5943'
 ).format(os.environ.get('FORCASTIO_KEY'))
 
 start_time = time.time()
