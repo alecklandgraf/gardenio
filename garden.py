@@ -4,7 +4,6 @@ import time
 import requests
 import os
 
-
 # MT TABOR, OR
 URL = (
     'https://api.forecast.io/forecast/{}/45.5119,-122.5943'
@@ -14,13 +13,15 @@ start_time = time.time()
 JABBER_ID = os.environ.get('JABBER_ID')
 JABBER_PASSWORD = os.environ.get('JABBER_PASSWORD')
 SHORT_ID = 'oneled'
+
 FRIENDLY_NAME = 'Raised Bed 1'
 MIN_TEMP, MAX_TEMP, DEFAULT_TEMP = 20, 110, 70
 PANEL_FORM = [
     [['O']],
     [
         ['S', 'weather', '-'],
-        ['G', 'temp', 'temp', DEFAULT_TEMP, MIN_TEMP, MAX_TEMP]
+        ['G', 'temp', 'temp', DEFAULT_TEMP, MIN_TEMP, MAX_TEMP],
+        ['S', 'moisture', '-'],
     ],
     [['C']],
     [['O']],
@@ -34,8 +35,10 @@ PANEL_FORM = [
 ]
 
 GPIO_NUM = 23
+GPIO_INPUT_PIN = 24
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO_NUM, GPIO.OUT)
+GPIO.setup(GPIO_INPUT_PIN, GPIO.IN)
 
 led_state = {GPIO_NUM: False}
 
@@ -49,6 +52,8 @@ def switch_led(state):
     if (time.time() - start_time) > 120:
         start_time = time.time()
         update_weather()
+    if (time.time() - start_time) > 1:
+        update_moisture_reading()
 
 
 def on_control_message(conn, key, value):
@@ -56,6 +61,13 @@ def on_control_message(conn, key, value):
         switch_led(True)
     elif key == 'off_button':
         switch_led(False)
+
+
+def update_moisture_reading():
+    if (GPIO.input(GPIO_INPUT_PIN)):
+        conn.update_status({'moisture': 'Soil dry'})
+    else:
+        conn.update_status({'moisture': 'Soil OK!'})
 
 
 def update_weather():
