@@ -7,7 +7,7 @@ The python scripts must be either run as root to access the GPIO, or the pi user
 Note: add the following line to `/etc/sudoers` by using `visudo`
 
 ```sh
-Defaults env_keep += "JABBER_ID JABBER_PASSWORD FORCASTIO_KEY"
+Defaults env_keep += "JABBER_ID JABBER_PASSWORD FORCASTIO_KEY FROM_NUMBER TO_NUMBER TWILIO_TOKEN TWILIO_SID"
 ```
 
 
