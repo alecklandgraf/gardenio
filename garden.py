@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO
 import time
 import requests
 import os
+from twilio.rest import TwilioRestClient
 
 # MT TABOR, OR
 URL = (
@@ -13,6 +14,11 @@ weather_start_time = time.time()
 JABBER_ID = os.environ.get('JABBER_ID')
 JABBER_PASSWORD = os.environ.get('JABBER_PASSWORD')
 SHORT_ID = 'oneled'
+TWILIO_SID = os.environ.get('TWILIO_SID')
+TWILIO_TOKEN = os.environ.get('TWILIO_TOKEN')
+TO_NUMBER = os.environ.get('TO_NUMBER')
+FROM_NUMBER = os.environ.get('FROM_NUMBER')
+client = TwilioRestClient(TWILIO_SID, TWILIO_TOKEN)
 
 FRIENDLY_NAME = 'Raised Bed 1'
 MIN_TEMP, MAX_TEMP, DEFAULT_TEMP = 20, 110, 70
@@ -41,7 +47,7 @@ GPIO.setup(GPIO_NUM, GPIO.OUT)
 GPIO.setup(GPIO_INPUT_PIN, GPIO.IN)
 
 
-led_state = {GPIO_NUM: False}
+led_state = {GPIO_NUM: True}
 
 
 def switch_led(state):
@@ -68,6 +74,11 @@ def update_moisture_reading(channel=None):
     print "updating moisture reading"
     if (GPIO.input(GPIO_INPUT_PIN)):
         conn.update_status({'moisture': 'Soil dry'})
+        client.messages.create(
+            to="+{}".format(TO_NUMBER),
+            from_="+{}".format(FROM_NUMBER),
+            body="water me"
+        )
     else:
         conn.update_status({'moisture': 'Soil OK!'})
 
@@ -87,16 +98,8 @@ def update_weather():
         conn.update_status({'weather': '{}'.format(summary), 'temp': temp})
 
 
-# this has to be declared below the callback
-GPIO.add_event_detect(
-    GPIO_INPUT_PIN,
-    GPIO.BOTH,
-    callback=update_moisture_reading
-)
-
-
 def main_loop():
-    switch_led(True)
+    switch_led(False)
     # run once
     update_moisture_reading()
     update_weather()
@@ -113,6 +116,12 @@ conn = ControlMyPi(
     on_control_message
 )
 
+# this has to be declared below the callback
+GPIO.add_event_detect(
+    GPIO_INPUT_PIN,
+    GPIO.BOTH,
+    callback=update_moisture_reading
+)
 if conn.start_control():
     try:
         main_loop()
