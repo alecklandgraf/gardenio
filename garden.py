@@ -9,7 +9,8 @@ URL = (
     'https://api.forecast.io/forecast/{}/45.5119,-122.5943'
 ).format(os.environ.get('FORCASTIO_KEY'))
 
-start_time = time.time()
+weather_start_time = time.time()
+moisture_start_time = time.time()
 JABBER_ID = os.environ.get('JABBER_ID')
 JABBER_PASSWORD = os.environ.get('JABBER_PASSWORD')
 SHORT_ID = 'oneled'
@@ -48,11 +49,13 @@ def switch_led(state):
         GPIO.output(GPIO_NUM, state)  # High to glow!
         conn.update_status({'state': 'watering' if state else 'off'})
         led_state[GPIO_NUM] = state
-    global start_time
-    if (time.time() - start_time) > 120:
-        start_time = time.time()
+    global weather_start_time
+    global moisture_start_time
+    if (time.time() - weather_start_time) > 5 * 60:
+        weather_start_time = time.time()
         update_weather()
-    if (time.time() - start_time) > 1:
+    if (time.time() - moisture_start_time) > 1:
+        weather_start_time = time.time()
         update_moisture_reading()
 
 
