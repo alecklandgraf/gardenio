@@ -64,7 +64,7 @@ def on_control_message(conn, key, value):
         switch_led(False)
 
 
-def update_moisture_reading():
+def update_moisture_reading(channel=None):
     print "updating moisture reading"
     if (GPIO.input(GPIO_INPUT_PIN)):
         conn.update_status({'moisture': 'Soil dry'})
