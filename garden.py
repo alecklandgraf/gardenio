@@ -10,7 +10,6 @@ URL = (
 ).format(os.environ.get('FORCASTIO_KEY'))
 
 weather_start_time = time.time()
-moisture_start_time = time.time()
 JABBER_ID = os.environ.get('JABBER_ID')
 JABBER_PASSWORD = os.environ.get('JABBER_PASSWORD')
 SHORT_ID = 'oneled'
@@ -41,10 +40,12 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(GPIO_NUM, GPIO.OUT)
 GPIO.setup(GPIO_INPUT_PIN, GPIO.IN)
 
+
 led_state = {GPIO_NUM: False}
 
 
 def switch_led(state):
+    """triggered on "on" "off" button press"""
     if led_state[GPIO_NUM] != state:
         GPIO.output(GPIO_NUM, state)  # High to glow!
         conn.update_status({'state': 'watering' if state else 'off'})
@@ -54,9 +55,6 @@ def switch_led(state):
     if (time.time() - weather_start_time) > 5 * 60:
         weather_start_time = time.time()
         update_weather()
-    if (time.time() - moisture_start_time) > 1:
-        weather_start_time = time.time()
-        update_moisture_reading()
 
 
 def on_control_message(conn, key, value):
@@ -89,8 +87,18 @@ def update_weather():
         conn.update_status({'weather': '{}'.format(summary), 'temp': temp})
 
 
+# this has to be declared below the callback
+GPIO.add_event_detect(
+    GPIO_INPUT_PIN,
+    GPIO.BOTH,
+    callback=update_moisture_reading
+)
+
+
 def main_loop():
     switch_led(True)
+    # run once
+    update_moisture_reading()
     update_weather()
     while True:
         time.sleep(3)  # Yield for a while but keep main thread running
