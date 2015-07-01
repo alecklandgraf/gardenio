@@ -39,6 +39,12 @@ PANEL_FORM = [
     [['C']],
     [['O']],
     [
+        ['L', 'soil moisture reading (UTC)'],
+        ['S', 'moisture_reading_time', '-'],
+    ],
+    [['C']],
+    [['O']],
+    [
         ['L', 'Soaker'],
         ['B', 'on_button', 'On'],
         ['B', 'off_button', 'Off'],
@@ -87,11 +93,12 @@ def update_moisture_reading(start_time=None, refresh_threshold_sec=ONE_HOUR):
         # tiny delay to let the sensor pull low
         time.sleep(1)
         reading = GPIO.input(GPIO_MOISTURE_INPUT_PIN)
+
         # check initial None state
         if reading == garden_state[GPIO_MOISTURE_INPUT_PIN]:
             print "{} nothing changed".format(now)
         elif reading:
-            conn.update_status({'moisture': 'Soil dry'})
+            conn.update_status({'moisture': 'Dry'})
             print "{} Soil Dry".format(now)
             garden_state[GPIO_MOISTURE_INPUT_PIN] = reading
             client.messages.create(
@@ -100,10 +107,11 @@ def update_moisture_reading(start_time=None, refresh_threshold_sec=ONE_HOUR):
                 body="water me"
             )
         else:
-            conn.update_status({'moisture': 'Soil OK!'})
+            conn.update_status({'moisture': 'OK'})
             print "{} Soil Ok".format(now)
             garden_state[GPIO_MOISTURE_INPUT_PIN] = reading
         GPIO.output(GPIO_MOISTURE_POWER_PIN, GPIO.LOW)
+        conn.update_status({'moisture_reading_time': '{}'.format(now)})
         return start_time
 
 
