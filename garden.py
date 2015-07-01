@@ -91,16 +91,16 @@ def update_moisture_reading(start_time=None, refresh_threshold_sec=ONE_HOUR):
         if reading == garden_state[GPIO_MOISTURE_INPUT_PIN]:
             print "{} nothing changed".format(now)
         elif reading:
-            conn.update_status({'moisture': '{} Soil dry'.format(now)})
-            garden_state[GPIO_MOISTURE_INPUT_PIN] = reading
+            conn.update_status({'moisture': 'Soil dry'})
             print "{} Soil Dry".format(now)
+            garden_state[GPIO_MOISTURE_INPUT_PIN] = reading
             client.messages.create(
                 to="+{}".format(TO_NUMBER),
                 from_="+{}".format(FROM_NUMBER),
                 body="water me"
             )
         else:
-            conn.update_status({'moisture': '{} Soil OK!'.format(now)})
+            conn.update_status({'moisture': 'Soil OK!'})
             print "{} Soil Ok".format(now)
             garden_state[GPIO_MOISTURE_INPUT_PIN] = reading
         GPIO.output(GPIO_MOISTURE_POWER_PIN, GPIO.LOW)
