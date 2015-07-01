@@ -29,6 +29,11 @@ PANEL_FORM = [
     [
         ['S', 'weather', '-'],
         ['G', 'temp', 'temp', DEFAULT_TEMP, MIN_TEMP, MAX_TEMP],
+    ],
+    [['C']],
+    [['O']],
+    [
+        ['L', 'soil moisture'],
         ['S', 'moisture', '-'],
     ],
     [['C']],
