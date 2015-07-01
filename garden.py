@@ -40,24 +40,28 @@ PANEL_FORM = [
     [['C']],
 ]
 
-GPIO_NUM = 23
-GPIO_INPUT_PIN = 24
+GPIO_VALVE_PIN = 23
+GPIO_MOISTURE_INPUT_PIN = 24
+GPIO_MOISTURE_POWER_PIN = 25
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(GPIO_NUM, GPIO.OUT)
-GPIO.setup(GPIO_INPUT_PIN, GPIO.IN)
+GPIO.setup(GPIO_VALVE_PIN, GPIO.OUT)
+GPIO.setup(GPIO_MOISTURE_POWER_PIN, GPIO.OUT)
+GPIO.setup(GPIO_MOISTURE_INPUT_PIN, GPIO.IN)
 
 
-led_state = {GPIO_NUM: True}
+garden_state = {
+    GPIO_VALVE_PIN: True,
+    GPIO_MOISTURE_INPUT_PIN: None
+}
 
 
 def switch_led(state):
     """triggered on "on" "off" button press"""
-    if led_state[GPIO_NUM] != state:
-        GPIO.output(GPIO_NUM, state)  # High to glow!
+    if garden_state[GPIO_VALVE_PIN] != state:
+        GPIO.output(GPIO_VALVE_PIN, state)  # High to glow!
         conn.update_status({'state': 'watering' if state else 'off'})
-        led_state[GPIO_NUM] = state
+        garden_state[GPIO_VALVE_PIN] = state
     global weather_start_time
-    global moisture_start_time
     if (time.time() - weather_start_time) > 5 * 60:
         weather_start_time = time.time()
         update_weather()
@@ -72,15 +76,26 @@ def on_control_message(conn, key, value):
 
 def update_moisture_reading(channel=None):
     print "updating moisture reading"
-    if (GPIO.input(GPIO_INPUT_PIN)):
+    GPIO.output(GPIO_MOISTURE_POWER_PIN, GPIO.HIGH)
+    time.sleep(.5)
+    reading = GPIO.input(GPIO_MOISTURE_INPUT_PIN)
+    # check initial None state
+    if reading == garden_state[GPIO_MOISTURE_INPUT_PIN]:
+        print "nothing changed"
+    elif reading:
         conn.update_status({'moisture': 'Soil dry'})
-        client.messages.create(
-            to="+{}".format(TO_NUMBER),
-            from_="+{}".format(FROM_NUMBER),
-            body="water me"
-        )
+        garden_state[GPIO_MOISTURE_INPUT_PIN] = reading
+        print "Soil Dry"
+        # client.messages.create(
+        #     to="+{}".format(TO_NUMBER),
+        #     from_="+{}".format(FROM_NUMBER),
+        #     body="water me"
+        # )
     else:
         conn.update_status({'moisture': 'Soil OK!'})
+        print "Soil Ok"
+        garden_state[GPIO_MOISTURE_INPUT_PIN] = reading
+    GPIO.output(GPIO_MOISTURE_POWER_PIN, GPIO.LOW)
 
 
 def update_weather():
@@ -105,6 +120,7 @@ def main_loop():
     update_weather()
     while True:
         time.sleep(3)  # Yield for a while but keep main thread running
+        update_moisture_reading()
 
 
 conn = ControlMyPi(
@@ -117,11 +133,11 @@ conn = ControlMyPi(
 )
 
 # this has to be declared below the callback
-GPIO.add_event_detect(
-    GPIO_INPUT_PIN,
-    GPIO.BOTH,
-    callback=update_moisture_reading
-)
+# GPIO.add_event_detect(
+#     GPIO_MOISTURE_INPUT_PIN,
+#     GPIO.BOTH,
+#     callback=update_moisture_reading
+# )
 if conn.start_control():
     try:
         main_loop()
