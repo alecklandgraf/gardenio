@@ -111,7 +111,9 @@ def update_moisture_reading(start_time=None, refresh_threshold_sec=ONE_HOUR):
             print "{} Soil Ok".format(now)
             garden_state[GPIO_MOISTURE_INPUT_PIN] = reading
         GPIO.output(GPIO_MOISTURE_POWER_PIN, GPIO.LOW)
-        conn.update_status({'moisture_reading_time': '{}'.format(now)})
+        conn.update_status({'moisture_reading_time': '{} {}'.format(
+            now.strftime('%x'), now.strftime('%X')
+        )})
         return start_time
 
 
