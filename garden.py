@@ -27,19 +27,20 @@ MIN_TEMP, MAX_TEMP, DEFAULT_TEMP = 20, 110, 70
 PANEL_FORM = [
     [['O']],
     [
+        ['L', 'Currently'],
         ['S', 'weather', '-'],
         ['G', 'temp', 'temp', DEFAULT_TEMP, MIN_TEMP, MAX_TEMP],
     ],
     [['C']],
     [['O']],
     [
-        ['L', 'soil moisture'],
+        ['L', 'Soil Moisture'],
         ['S', 'moisture', '-'],
     ],
     [['C']],
     [['O']],
     [
-        ['L', 'soil moisture reading (UTC)'],
+        ['L', 'Checked At (UTC)'],
         ['S', 'moisture_reading_time', '-'],
     ],
     [['C']],
@@ -72,7 +73,7 @@ def switch_led(state):
     """triggered on "on" "off" button press"""
     if garden_state[GPIO_VALVE_PIN] != state:
         GPIO.output(GPIO_VALVE_PIN, state)  # High to glow!
-        conn.update_status({'state': 'watering' if state else 'off'})
+        conn.update_status({'state': 'Watering' if state else 'Off'})
         garden_state[GPIO_VALVE_PIN] = state
 
 

@@ -1,10 +1,33 @@
 # Raspberry Pi irregation system
 
-### GPIO: the need for **sudo**
 
-The python scripts must be either run as root to access the GPIO, or the pi user granted access to them. If using the former method you'll want to allow a couple enviroment variables set in `/etc/environment` to be available to `sudo`.
 
-Note: add the following line to `/etc/sudoers` by using `visudo`
+## Quickstart
+
+- git clone this repo to your pi
+- set up your twilio account, jabber account (gmail), forcast.io account
+- add the environmental variables and allow sudo to use them (see next section)
+- wire up the pi to the valve (or LED) and moisture sensor
+- `sudo python garden.py`
+- goto connectmypi.com to find your pi
+
+### GPIO: the need for sudo and environmental variables
+
+The python scripts must be either run as *root* to access the GPIO, or the *pi* user must be granted access to them. If using the former method, you'll want to allow a couple enviroment variables set in `/etc/environment` to be available to `sudo`.
+
+These at the moment are:
+
+```
+JABBER_ID
+JABBER_PASSWORD
+FORCASTIO_KEY
+TWILIO_TOKEN
+TWILIO_SID
+FROM_NUMBER
+TO_NUMBER
+```
+
+To allow *sudo* access to these environment variables, add the following line to `/etc/sudoers` by using `visudo`
 
 ```sh
 Defaults env_keep += "JABBER_ID JABBER_PASSWORD FORCASTIO_KEY FROM_NUMBER TO_NUMBER TWILIO_TOKEN TWILIO_SID"
@@ -13,3 +36,20 @@ Defaults env_keep += "JABBER_ID JABBER_PASSWORD FORCASTIO_KEY FROM_NUMBER TO_NUM
 
 For the later method of allowing the `pi` user access to the GPIO, try one of these methods: https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=73924
 https://github.com/quick2wire/quick2wire-gpio-admin
+
+Sample console log:
+
+```
+2015-07-01 05:49:59.573268 Soil Ok
+2015-07-01 05:50:11.289574 Soil Dry
+2015-07-01 05:50:23.634059 nothing changed
+2015-07-01 05:50:33.990765 nothing changed
+2015-07-01 05:50:44.527970 nothing changed
+2015-07-01 05:50:54.882961 nothing changed
+2015-07-01 05:51:05.224472 nothing changed
+2015-07-01 05:51:15.546604 nothing changed
+2015-07-01 05:51:25.786950 Soil Ok
+2015-07-01 05:51:36.863456 nothing changed
+2015-07-01 05:51:47.566889 nothing changed
+2015-07-01 05:51:58.254585 nothing changed
+```
