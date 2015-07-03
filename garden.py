@@ -40,7 +40,7 @@ PANEL_FORM = [
     [['C']],
     [['O']],
     [
-        ['L', 'Checked At (UTC)'],
+        ['L', 'Next reading in'],
         ['S', 'moisture_reading_time', '-'],
     ],
     [['C']],
@@ -69,6 +69,11 @@ garden_state = {
 }
 
 
+def get_next_reading(seconds):
+    """returns a tuple of (minutes, seconds) from ``seconds``"""
+    return (int(seconds / 60), int(seconds % 60))
+
+
 def switch_led(state):
     """triggered on "on" "off" button press"""
     if garden_state[GPIO_VALVE_PIN] != state:
@@ -86,6 +91,10 @@ def on_control_message(conn, key, value):
 
 def update_moisture_reading(start_time=None, refresh_threshold_sec=ONE_HOUR):
     if start_time and (time.time() - start_time) < refresh_threshold_sec:
+        seconds_passed = time.time() - start_time
+        min, sec = get_next_reading(refresh_threshold_sec - seconds_passed)
+        update_string = '{} minutes and {} seconds'.format(min, sec)
+        conn.update_status({'moisture_reading_time': update_string})
         return start_time
     else:
         start_time = time.time()
@@ -112,9 +121,6 @@ def update_moisture_reading(start_time=None, refresh_threshold_sec=ONE_HOUR):
             print "{} Soil Ok".format(now)
             garden_state[GPIO_MOISTURE_INPUT_PIN] = reading
         GPIO.output(GPIO_MOISTURE_POWER_PIN, GPIO.LOW)
-        conn.update_status({'moisture_reading_time': '{} {}'.format(
-            now.strftime('%x'), now.strftime('%X')
-        )})
         return start_time
 
 
