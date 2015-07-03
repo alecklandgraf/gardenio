@@ -53,3 +53,19 @@ Sample console log:
 2015-07-01 05:51:47.566889 nothing changed
 2015-07-01 05:51:58.254585 nothing changed
 ```
+
+
+### TODO
+ - [ ] document circuit
+ - [ ] move weather bits into a weather.py
+ - [ ] update weather display to include forecast
+ - [ ] remove hard coded weather location
+ - [ ] make weather getting (API key) optional
+ - [ ] move texting bits to messaging.py
+ - [ ] make messaging optional (Twilio API key)
+ - [ ] parameterize functions for GPIO pins (init them with a setup func)
+ - [ ] allow manual (requested) check of moisture
+ - [ ] move into a web server (flask, django, bottle, etc) with nginx and whitenoise
+ - [ ] investigate using websockets or something like pubnub for real time status, or just AJAX long polling, if pubnub is too pricey and getting twisted/tornado running is a pain or too resource intensive for the pi
+ - [ ] add ability to send moisture & temperature readings to external DB (elasticsearch or postgres)
+

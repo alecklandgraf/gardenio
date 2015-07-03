@@ -93,7 +93,7 @@ def update_moisture_reading(start_time=None, refresh_threshold_sec=ONE_HOUR):
     if start_time and (time.time() - start_time) < refresh_threshold_sec:
         seconds_passed = time.time() - start_time
         min, sec = get_next_reading(refresh_threshold_sec - seconds_passed)
-        update_string = '{} minutes and {} seconds'.format(min, sec)
+        update_string = '{} minutes'.format(min)
         conn.update_status({'moisture_reading_time': update_string})
         return start_time
     else:
