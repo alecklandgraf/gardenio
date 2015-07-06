@@ -57,10 +57,10 @@ Sample console log:
 
 ### Wiring the circuit
 
-![schematic](images/schematic__bb.png)
+![schematic](images/schematic_bb.png)
 
 ### TODO
- - [ ] document circuit
+ - [X] document circuit
  - [ ] move weather bits into a weather.py
  - [ ] update weather display to include forecast
  - [ ] remove hard coded weather location
