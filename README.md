@@ -55,6 +55,10 @@ Sample console log:
 ```
 
 
+### Wiring the circuit
+
+![schematic](images/schematic__bb.png)
+
 ### TODO
  - [ ] document circuit
  - [ ] move weather bits into a weather.py
