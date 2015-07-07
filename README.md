@@ -4,7 +4,7 @@
 
 ## Quickstart
 
-- git clone this repo to your pi
+- git clone this repo to your pi and dependencies
 - set up your twilio account, jabber account (gmail), forcast.io account
 - add the environmental variables and allow sudo to use them (see next section)
 - wire up the pi to the valve (or LED) and moisture sensor
@@ -33,9 +33,16 @@ To allow *sudo* access to these environment variables, add the following line to
 Defaults env_keep += "JABBER_ID JABBER_PASSWORD FORCASTIO_KEY FROM_NUMBER TO_NUMBER TWILIO_TOKEN TWILIO_SID"
 ```
 
-
 For the later method of allowing the `pi` user access to the GPIO, try one of these methods: https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=73924
 https://github.com/quick2wire/quick2wire-gpio-admin
+
+### Dependencies
+
+The usual python-dev linux stuff and:
+
+    sudo apt-get install python-smbus
+
+
 
 Sample console log:
 
