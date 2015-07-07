@@ -42,7 +42,7 @@ The usual python-dev linux stuff and:
 
     sudo apt-get install python-smbus
 
-Then configure the raspberry pi for i2c: https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c
+Then configure the raspberry pi for i2c via `sudo raspi-config` [following this guide](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c). Note: under the `Advanced Options` I had to selecet option `A0 Update` for the `raspi-config` tool to provide an I2C option.
 
 
 
