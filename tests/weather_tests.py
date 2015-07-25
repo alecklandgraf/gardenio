@@ -4,6 +4,8 @@ import time
 from unittest2 import TestCase
 from weather import _get_weather_url, update_weather
 
+# TODO: mock out requests (with responses lib) and verify that callback gets hit
+
 
 class WeatherTests(TestCase):
 

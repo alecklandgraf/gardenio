@@ -70,7 +70,7 @@ Sample console log:
 
 
 ### Development
-    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
     nosetests
 
 ### TODO
