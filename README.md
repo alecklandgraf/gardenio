@@ -75,7 +75,7 @@ Sample console log:
 
 ### TODO
  - [X] document circuit
- - [ ] move weather bits into a weather.py
+ - [X] move weather bits into a weather.py
  - [ ] update weather display to include forecast
  - [ ] remove hard coded weather location
  - [ ] make weather getting (API key) optional
