@@ -1,20 +1,18 @@
-from controlmypi import ControlMyPi
-import RPi.GPIO as GPIO
-import time
 import datetime
 import os
-from twilio.rest import TwilioRestClient
+import time
+
+from controlmypi import ControlMyPi
+import RPi.GPIO as GPIO
+
 from weather import update_weather
+from messaging import send_message
 
 
 JABBER_ID = os.environ.get('JABBER_ID')
 JABBER_PASSWORD = os.environ.get('JABBER_PASSWORD')
 SHORT_ID = 'oneled'
-TWILIO_SID = os.environ.get('TWILIO_SID')
-TWILIO_TOKEN = os.environ.get('TWILIO_TOKEN')
-TO_NUMBER = os.environ.get('TO_NUMBER')
-FROM_NUMBER = os.environ.get('FROM_NUMBER')
-client = TwilioRestClient(TWILIO_SID, TWILIO_TOKEN)
+
 ONE_HOUR = 60 * 60
 
 FRIENDLY_NAME = 'Raised Bed 1'
@@ -106,11 +104,7 @@ def update_moisture_reading(start_time=None, refresh_threshold_sec=ONE_HOUR):
             conn.update_status({'moisture': 'Dry'})
             print "{} Soil Dry".format(now)
             garden_state[GPIO_MOISTURE_INPUT_PIN] = reading
-            client.messages.create(
-                to="+{}".format(TO_NUMBER),
-                from_="+{}".format(FROM_NUMBER),
-                body="water me"
-            )
+            send_message("water me")
         else:
             conn.update_status({'moisture': 'OK'})
             print "{} Soil Ok".format(now)
