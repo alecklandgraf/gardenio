@@ -48,11 +48,17 @@ class WeatherTests(TestCase):
             callback=request_callback,
             content_type='application/json',
         )
+        # get a time to start with
         start = time.time()
+        # get a new time from update_weather since we didn't pass in start_time
         start_time = update_weather()
         self.assertLess(start, start_time)
+        # start_time should be less that the returned time from update_weather
         self.assertLess(start_time, update_weather())
+        # passing in a time should return that same time if one hour hasn't passed
         self.assertEqual(start_time, update_weather(start_time=start_time))
+        # if our refresh threshold is passed we should get a new start time
+        self.assertLess(start, update_weather(start_time=start, refresh_threshold_sec=0.00001))
         # this tests the callback
         update_weather(callback=weather_callback)
 
