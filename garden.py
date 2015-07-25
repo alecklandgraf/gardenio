@@ -126,8 +126,8 @@ def callback(payload):
 def main_loop():
     switch_led(False)
     # run once
-    moisture_start = update_moisture_reading(callback=callback)
-    weather_start = update_weather()
+    moisture_start = update_moisture_reading()
+    weather_start = update_weather(callback=callback)
     while True:
         time.sleep(3)  # Yield for a while but keep main thread running
         moisture_start = update_moisture_reading(start_time=moisture_start)
