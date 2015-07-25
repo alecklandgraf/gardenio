@@ -68,6 +68,11 @@ Sample console log:
 
 ![schematic](images/schematic_bb.png)
 
+
+### Development
+    pip install -r requirements.txt
+    nosetests
+
 ### TODO
  - [X] document circuit
  - [ ] move weather bits into a weather.py
