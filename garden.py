@@ -2,14 +2,9 @@ from controlmypi import ControlMyPi
 import RPi.GPIO as GPIO
 import time
 import datetime
-import requests
 import os
 from twilio.rest import TwilioRestClient
-
-# MT TABOR, OR
-URL = (
-    'https://api.forecast.io/forecast/{}/45.5119,-122.5943'
-).format(os.environ.get('FORCASTIO_KEY'))
+from weather import update_weather
 
 
 JABBER_ID = os.environ.get('JABBER_ID')
@@ -124,35 +119,19 @@ def update_moisture_reading(start_time=None, refresh_threshold_sec=ONE_HOUR):
         return start_time
 
 
-def update_weather(start_time=None, refresh_threshold_sec=ONE_HOUR):
-    if start_time and (time.time() - start_time) < refresh_threshold_sec:
-        return start_time
-    else:
-        start_time = time.time()
-        resp = requests.get(URL)
-        if not resp.ok:
-            print "error getting weather data", resp.content
-            conn.update_status({
-                'weather': 'error getting weather data',
-                'temp': 30
-            })
-        else:
-            data = resp.json()
-            summary = data['currently']['summary']
-            temp = data['currently']['temperature']
-            conn.update_status({'weather': '{}'.format(summary), 'temp': temp})
-        return start_time
+def callback(payload):
+    conn.update_status(payload)
 
 
 def main_loop():
     switch_led(False)
     # run once
-    moisture_start = update_moisture_reading()
+    moisture_start = update_moisture_reading(callback=callback)
     weather_start = update_weather()
     while True:
         time.sleep(3)  # Yield for a while but keep main thread running
         moisture_start = update_moisture_reading(start_time=moisture_start)
-        weather_start = update_weather(start_time=weather_start)
+        weather_start = update_weather(start_time=weather_start, callback=callback)
 
 
 conn = ControlMyPi(
