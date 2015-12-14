@@ -12,4 +12,4 @@ while 1:
         timestamp=datetime.datetime.now()
     )
     log.save()
-    print "log {} saved".format(log.id)
+    print "log {} saved".format(log)
