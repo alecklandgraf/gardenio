@@ -11,5 +11,8 @@ while 1:
         light=light,
         timestamp=datetime.datetime.now()
     )
-    log.save()
+    try:
+        log.save()
+    except:
+        print "Error logging data"
     print "log {} saved".format(log)
