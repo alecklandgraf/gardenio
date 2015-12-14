@@ -9,7 +9,7 @@ i2c = Adafruit_I2C( deviceAddr, -1, False )
 def check(debug=True):
     """probes chirp via I2C and returns tuple (temp, moisture, and light)
     temp in degrees C
-    dry = 311, submerged ~480 
+    dry = 311, submerged ~480
     daylight: 10k, dark: 33k
     """
     i2c.write8( deviceAddr, 0x06 )
