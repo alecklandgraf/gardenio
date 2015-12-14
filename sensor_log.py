@@ -3,7 +3,7 @@ from elasticsearch_dsl import DocType, String, Date, Integer, Float
 from elasticsearch_dsl.connections import connections
 
 # Define a default Elasticsearch client
-connections.create_connection(hosts=['192.168.1.122'])
+connections.create_connection(hosts=['192.168.1.122:9876'])
 
 WEEKDAYS = ('Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun')
 
