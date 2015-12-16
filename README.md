@@ -89,4 +89,5 @@ Sample console log:
  - [ ] spin up a react native app demo
  - [ ] add a settings.py for loading ENV vars
  - [ ] add messaging tests
+ - [ ] try with onion: https://github.com/BaselKillaBees/Onion-Omega/wiki/Installing-Python-on-Onion-Omega
 
