@@ -1,5 +1,6 @@
 # Raspberry Pi irregation system
 
+![schematic](images/timelino.png)
 
 
 ## Quickstart
